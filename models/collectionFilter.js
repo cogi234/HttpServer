@@ -22,7 +22,7 @@ export default class CollectionFilter {
         this.errorMessages.push(message);
     }
 
-    valid() {
+    isValid() {
         return this.errorMessages.length == 0;
     }
 
@@ -320,7 +320,7 @@ export default class CollectionFilter {
     }
     
     get() {
-        if (this.valid()) {
+        if (this.isValid()) {
             this.filteredCollection = this.findByKeys(this.collection);
             if (this.fields.length > 0) {
                 this.filteredCollection = this.keepFields(this.filteredCollection);
