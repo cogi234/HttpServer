@@ -1,0 +1,19 @@
+{
+  "name": "http-server",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "Minimal http server",
+  "dependencies": {
+    "query-string": "^9.1.0",
+    "uuid": "^10.0.0",
+    "date-and-time": "^2.4.1",
+    "properties-reader": "^2.1.1"
+  }
+}
