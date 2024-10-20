@@ -1,4 +1,5 @@
 import * as AssetsManager from '../assetManager.js';
+import * as utilities from '../utilities.js';
 
 export default class Model {
     constructor() {

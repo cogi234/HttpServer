@@ -8,6 +8,14 @@ global.cachedRepositoriesCleanerStarted = false;
 
 export default class RepositoryCacheManager {
     /**
+     * Start cleaning the cache
+     */
+    static startCachedRepositoriesCleaner() {
+        setInterval(RepositoryCacheManager.flushExpired, repositoryCacheExpirationTime * 1000);
+        console.log(BgWhite + FgBlue, "[Periodic repositories data caches cleaning process started...]");
+    }
+
+    /**
      * Adds the model data to the cache
      */
     static add(model, data) {
@@ -26,12 +34,6 @@ export default class RepositoryCacheManager {
             Expire_Time: utilities.nowInSeconds() + repositoryCacheExpirationTime
         });
         console.log(BgWhite + FgBlue, `[Data of ${model} repository has been cached]`);
-
-    }
-
-    static startCachedRepositoriesCleaner() {
-        setInterval(RepositoryCacheManager.flushExpired, repositoryCacheExpirationTime * 1000);
-        console.log(BgWhite + FgBlue, "[Periodic repositories data caches cleaning process started...]");
     }
 
     /**

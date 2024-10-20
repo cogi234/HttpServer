@@ -1,3 +1,5 @@
+import CachedRequestManager from "../CachedRequestsManager.js";
+
 export default class Controller {
     constructor(HttpContext, repository = null) {
         this.HttpContext = HttpContext;
@@ -6,87 +8,83 @@ export default class Controller {
 
     head() {
         if (this.repository != null)
-            this.HttpContext.response.ETag(this.repository.ETag);
+            return this.HttpContext.response.ETag(this.repository.ETag);
         else
-            this.HttpContext.response.notImplemented();
+            return this.HttpContext.response.notImplemented();
     }
 
     get(id) {
-        if (this.repository == null) {
-            this.HttpContext.response.notImplemented();
-            return;
-        }
+        if (this.repository == null)
+            return this.HttpContext.response.notImplemented();
+
         if (id === undefined) {
             let data = this.repository.getAll(this.HttpContext.path.params);
 
             if (this.repository.isValid())
-                this.HttpContext.response.JSON(data, this.repository.ETag);
+                return this.HttpContext.response.JSON(data, this.repository.ETag);
             else
-                this.HttpContext.response.badRequest(this.repository.errorMessages);
-            return;
+                return this.HttpContext.response.badRequest(this.repository.errorMessages);
         }
-        if (isNaN(id)) {
-            this.HttpContext.response.badRequest('The id in the request url is malformed or syntactically wrong.');
-            return;
-        }
+        if (isNaN(id))
+            return this.HttpContext.response.badRequest('The id in the request url is malformed or syntactically wrong.');
 
         let data = this.repository.get(id);
         if (data)
-            this.HttpContext.response.JSON(data);
+            return this.HttpContext.response.JSON(data);
         else
-            this.HttpContext.response.notFound('Resource not found.');
+            return this.HttpContext.response.notFound('Resource not found.');
     }
 
     post(data) {
         data = this.repository.add(data);
 
         if (this.repository.model.state.isValid) {
-            this.HttpContext.response.created(data);
-            return;
+            CachedRequestManager.clear(this.HttpContext.req.url);
+            return this.HttpContext.response.created(data);
         }
+
         //Invalid model
-        if (this.repository.model.state.inConflict) {
-            this.HttpContext.response.conflict(this.repository.model.state.errors);
-            return;
-        }
-        this.HttpContext.response.badRequest(this.repository.model.state.errors);
+        if (this.repository.model.state.inConflict)
+            return this.HttpContext.response.conflict(this.repository.model.state.errors);
+
+        return this.HttpContext.response.badRequest(this.repository.model.state.errors);
     }
 
     put(data) {
         if (isNaN(this.HttpContext.path.id)) {
-            this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
-            return;
+            return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
         }
 
         this.repository.update(this.HttpContext.path.id, data);
 
         if (this.repository.model.state.isValid) {
-            this.HttpContext.response.ok();
-            return;
+            let idLength = this.HttpContext.path.id.toString().length;
+            let urlLength = this.HttpContext.req.url.length;
+            CachedRequestManager.clear(this.HttpContext.req.url.substring(0, urlLength - idLength - 1));
+            return this.HttpContext.response.ok();
         }
+
         //Invalid model
-        if (this.repository.model.state.notFound) {
-            this.HttpContext.response.notFound(this.repository.model.state.errors);
-            return;
-        }
-        if (this.repository.model.state.inConflict) {
-            this.HttpContext.response.conflict(this.repository.model.state.errors);
-            return;
-        }
+        if (this.repository.model.state.notFound)
+            return this.HttpContext.response.notFound(this.repository.model.state.errors);
+
+        if (this.repository.model.state.inConflict)
+            return this.HttpContext.response.conflict(this.repository.model.state.errors);
+
         this.HttpContext.response.badRequest(this.repository.model.state.errors);
     }
 
     remove(id) {
-        if (isNaN(id)) {
-            this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
-            return;
-        }
+        if (isNaN(id))
+            return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
+
         //We try to remove
         if (this.repository.remove(id)) {
-            this.HttpContext.response.accepted();
-            return;
+            CachedRequestManager.clear(this.HttpContext.req.url);
+            return this.HttpContext.response.deleted();
         }
+
         //we failed to remove
-        this.HttpContext.response.notFound("Resource not found.");
+        return this.HttpContext.response.notFound("Resource not found.");
     }
 }
