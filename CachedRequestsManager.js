@@ -98,7 +98,7 @@ export default class CachedRequestManager {
     static get(httpContext) {
         if (httpContext.isCacheable) {
             let data = CachedRequestManager.find(httpContext.req.url);
-            if (data != null && (httpContext.req.headers['etag'] == data.ETag || httpContext.req.headers['etag'] == null)) {
+            if (data != null) {
                 console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
                 return httpContext.response.JSON(data.content, data.ETag, true);
             }
