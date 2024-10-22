@@ -41,7 +41,7 @@ export default class Repository {
      */
     newETag() {
         this.ETag = uuid();
-        repositoryETags[this.objectsName] = this.ETagl
+        repositoryETags[this.objectsName] = this.ETag;
     }
 
     static getETag(modelName) {

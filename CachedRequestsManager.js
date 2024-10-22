@@ -21,21 +21,12 @@ export default class CachedRequestManager {
     static clear(url, log = true) {
         if (url == "")
             return;
-
-        let indexesToDelete = [];
-        let index = 0;
-
-        //We delete the cache for the url and any derived url (urls that start with the provided url)
-        for (let cache of requestCaches) {
-            if (cache.url.startsWith(url) || cache.url == url)
-                indexesToDelete.push(index);
-            index++;
-        }
         
         if (log)
             console.log(BgWhite + FgBlue, `[Cached ${url} data deleted]`);
-
-        utilities.deleteByIndex(requestCaches, indexesToDelete);
+        
+        //We delete the cache for the url and any derived url (urls that start with the provided url)
+        requestCaches = requestCaches.filter(cache => !cache.url.startsWith(url) && cache.url != url);
     }
 
     /**
@@ -107,7 +98,7 @@ export default class CachedRequestManager {
     static get(httpContext) {
         if (httpContext.isCacheable) {
             let data = CachedRequestManager.find(httpContext.req.url);
-            if (data != null && (httpContext.req.headers['ETag'] == data.ETag || httpContext.req.headers['ETag'] == null)) {
+            if (data != null && (httpContext.req.headers['etag'] == data.ETag || httpContext.req.headers['etag'] == null)) {
                 console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
                 return httpContext.response.JSON(data.content, data.ETag, true);
             }

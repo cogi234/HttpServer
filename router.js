@@ -11,6 +11,10 @@ export async function apiEndpoint(httpContext) {
 
                 let controller = new Controller(httpContext);
                 switch (httpContext.req.method) {
+                    case 'HEAD':
+                        controller.head(httpContext.path.id);
+                        resolve(true);
+                        break;
                     case 'GET':
                         controller.get(httpContext.path.id);
                         resolve(true);
