@@ -14,19 +14,19 @@ class Bookmarks_API {
     static async Get(id = null) {
         return new Promise(resolve => {
             $.ajax({
-                url: this.API_URL() + (id != null ? "/" + id : ""),
-                success: data => { resolve(data); },
+                url: this.API_URL() + (id ? "/" + id : ""),
+                success: contacts => { resolve(contacts); },
                 error: (xhr) => { console.log(xhr); resolve(null); }
             });
         });
     }
-    static async Save(data, create = true) {
+    static async Save(contact, create = true) {
         return new Promise(resolve => {
             $.ajax({
-                url: create ? this.API_URL() :  this.API_URL() + "/" + data.Id,
+                url: create ? this.API_URL() : this.API_URL() + "/" + contact.Id,
                 type: create ? "POST" : "PUT",
                 contentType: 'application/json',
-                data: JSON.stringify(data),
+                data: JSON.stringify(contact),
                 success: (/*data*/) => { resolve(true); },
                 error: (/*xhr*/) => { resolve(false /*xhr.status*/); }
             });

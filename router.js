@@ -1,7 +1,9 @@
 export async function apiEndpoint(httpContext) {
     return new Promise(async resolve => {
-        if (!httpContext.path.isAPI)
-            return false;
+        if (!httpContext.path.isAPI) {
+            resolve(false);
+            return;
+        }
 
         let controllerName = httpContext.path.controllerName;
         if (controllerName != undefined) {
