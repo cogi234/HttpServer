@@ -1,5 +1,6 @@
 import * as utilities from './utilities.js';
 import * as serverVariables from './serverVariables.js';
+import Repository from './models/repository.js';
 
 let requestCacheExpirationTime = serverVariables.get('main.request.CacheExpirationTime');
 
@@ -98,7 +99,7 @@ export default class CachedRequestManager {
     static get(httpContext) {
         if (httpContext.isCacheable) {
             let data = CachedRequestManager.find(httpContext.req.url);
-            if (data != null) {
+            if (data != null && data.ETag == Repository.getETag(httpContext.path.model)) {
                 console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
                 return httpContext.response.JSON(data.content, data.ETag, true);
             }

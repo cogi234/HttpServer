@@ -1,5 +1,3 @@
-import CachedRequestManager from "../CachedRequestsManager.js";
-
 export default class Controller {
     constructor(HttpContext, repository = null) {
         this.HttpContext = HttpContext;
@@ -39,7 +37,6 @@ export default class Controller {
         data = this.repository.add(data);
 
         if (this.repository.model.state.isValid) {
-            CachedRequestManager.clear(this.HttpContext.req.url);
             return this.HttpContext.response.created(data);
         }
 
@@ -58,7 +55,6 @@ export default class Controller {
         this.repository.update(this.HttpContext.path.id, data);
 
         if (this.repository.model.state.isValid) {
-            CachedRequestManager.clear("/api/" + this.HttpContext.path.model.toLowerCase());
             return this.HttpContext.response.ok();
         }
 
@@ -78,7 +74,6 @@ export default class Controller {
 
         //We try to remove
         if (this.repository.remove(id)) {
-            CachedRequestManager.clear("/api/" + this.HttpContext.path.model.toLowerCase());
             return this.HttpContext.response.deleted();
         }
 
