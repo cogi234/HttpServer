@@ -1,3 +1,5 @@
+import Routes from "./routes.js";
+
 export async function apiEndpoint(httpContext) {
     return new Promise(async resolve => {
         if (!httpContext.path.isAPI) {
@@ -14,34 +16,28 @@ export async function apiEndpoint(httpContext) {
                 let controller = new Controller(httpContext);
                 switch (httpContext.req.method) {
                     case 'HEAD':
-                        controller.head(httpContext.path.id);
-                        resolve(true);
+                        resolve(controller.head(httpContext.path.id));
                         break;
                     case 'GET':
-                        controller.get(httpContext.path.id);
-                        resolve(true);
+                        resolve(controller.get(httpContext.path.id));
                         break;
                     case 'POST':
                         if (httpContext.payload)
-                            controller.post(httpContext.payload);
+                            resolve(controller.post(httpContext.payload));
                         else
-                            httpContext.response.unsupported();
-                        resolve(true);
+                            resolve(httpContext.response.unsupported());
                         break;
                     case 'PUT':
                         if (httpContext.payload)
-                            controller.put(httpContext.payload);
+                            resolve(controller.put(httpContext.payload));
                         else
-                            httpContext.response.unsupported();
-                        resolve(true);
+                            resolve(httpContext.response.unsupported());
                         break;
                     case 'DELETE':
-                        controller.remove(httpContext.path.id);
-                        resolve(true);
+                        resolve(controller.remove(httpContext.path.id));
                         break;
                     default:
-                        httpContext.response.notImplemented();
-                        resolve(true);
+                        resolve(httpContext.response.notImplemented());
                         break;
                 }
             } catch (error) {
@@ -53,5 +49,30 @@ export async function apiEndpoint(httpContext) {
         } else {
             resolve(false);
         }
+    });
+}
+
+export async function registeredEndpoint(httpContext) {
+
+    return new Promise(async resolve => {
+        let route = Routes.find(httpContext);
+
+        //If a route is found, we use it
+        if (route) {
+            try {
+                //Try to dynamically import the controller
+                const { default: Controller } = (await import('./controllers/' + route.controllerName + 'Controller.js'));
+
+                let controller = new Controller(httpContext);
+
+                resolve(controller[route.actionName](httpContext));
+            } catch (error) {
+                console.log('registered endpoint Error message: \n', error.message);
+                console.log('Stack: \n', error.stack);
+                resolve(httpContext.response.notFound());
+            }
+        }
+
+        resolve(false);
     });
 }

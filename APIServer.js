@@ -29,6 +29,9 @@ export default class APIServer {
         this.middlewarePipeline.add(handleCORSPreflight);
         this.middlewarePipeline.add(handleStaticResourceRequest);
 
+        // Custom routes
+        this.middlewarePipeline.add(router.registeredEndpoint);
+
         // API middleware
         this.middlewarePipeline.add(CachedRequestManager.get);
         this.middlewarePipeline.add(router.apiEndpoint);
