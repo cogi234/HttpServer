@@ -38,8 +38,10 @@ export default class Controller {
     post(data) {
         data = this.repository.add(data);
 
-        if (this.repository.model.state.isValid)
+        if (this.repository.model.state.isValid) {
+            CachedRequestManager.clear(this.HttpContext.req.url);
             return this.HttpContext.response.created(data);
+        }
 
         //Invalid model
         if (this.repository.model.state.inConflict)
@@ -55,8 +57,10 @@ export default class Controller {
 
         this.repository.update(this.HttpContext.path.id, data);
 
-        if (this.repository.model.state.isValid)
+        if (this.repository.model.state.isValid) {
+            CachedRequestManager.clear("/api/" + this.HttpContext.path.model.toLowerCase());
             return this.HttpContext.response.ok();
+        }
 
         //Invalid model
         if (this.repository.model.state.notFound)
@@ -73,8 +77,10 @@ export default class Controller {
             return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
 
         //We try to remove
-        if (this.repository.remove(id))
+        if (this.repository.remove(id)) {
+            CachedRequestManager.clear("/api/" + this.HttpContext.path.model.toLowerCase());
             return this.HttpContext.response.deleted();
+        }
 
         //we failed to remove
         return this.HttpContext.response.notFound("Resource not found.");

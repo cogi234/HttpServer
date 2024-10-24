@@ -26,7 +26,7 @@ export default class CachedRequestManager {
             console.log(BgWhite + FgBlue, `[Cached ${url} data deleted]`);
         
         //We delete the cache for the url and any derived url (urls that start with the provided url)
-        requestCaches = requestCaches.filter(cache => cache.url != url);
+        requestCaches = requestCaches.filter(cache => cache.url != url && !cache.url.startsWith(url));
     }
 
     /**
