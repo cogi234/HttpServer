@@ -339,7 +339,7 @@ export default class CollectionFilter {
             if (this.sortFields.length > 0)
                 this.sort();
             if (this.limit != undefined) {
-                return this.filteredCollection.slice(this.offset * this.limit, (this.offset + 1) * this.limit);
+                return this.filteredCollection.slice(this.offset, this.offset + this.limit);
             }
             return this.filteredCollection;
         } else
