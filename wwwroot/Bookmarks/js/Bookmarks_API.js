@@ -1,3 +1,4 @@
+
 class Bookmarks_API {
     static API_URL() { return "http://localhost:5001/api/bookmarks" };
     static async HEAD() {
@@ -15,7 +16,8 @@ class Bookmarks_API {
         return new Promise(resolve => {
             $.ajax({
                 url: this.API_URL() + (id != null ? "/" + id : ""),
-                success: data => { resolve(data); },
+                complete: data => {  resolve({ETag:data.getResponseHeader('ETag'), data:data.responseJSON }); },
+                //success: data => { resolve(data); },
                 error: (xhr) => { console.log(xhr); resolve(null); }
             });
         });

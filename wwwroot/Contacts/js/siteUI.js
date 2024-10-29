@@ -35,7 +35,7 @@ function renderAbout() {
                     Auteur: Nicolas Chourot
                 </p>
                 <p>
-                    Collège Lionel-Groulx, automne 2024
+                    Collège Lionel-Groulx, automne 2023
                 </p>
             </div>
         `))
@@ -47,7 +47,7 @@ async function renderContacts() {
     $("#abort").hide();
     let contacts = await API_GetContacts();
     eraseContent();
-    if (contacts) {
+    if (contacts !== null) {
         contacts.forEach(contact => {
             $("#content").append(renderContact(contact));
         });
@@ -55,11 +55,11 @@ async function renderContacts() {
         // Attached click events on command icons
         $(".editCmd").on("click", function () {
             saveContentScrollPosition();
-            renderEditContactForm(parseInt($(this).attr("editContactId")));
+            renderEditContactForm($(this).attr("editContactId"));
         });
         $(".deleteCmd").on("click", function () {
             saveContentScrollPosition();
-            renderDeleteContactForm(parseInt($(this).attr("deleteContactId")));
+            renderDeleteContactForm($(this).attr("deleteContactId"));
         });
         $(".contactRow").on("click", function (e) { e.preventDefault(); })
     } else {
@@ -95,7 +95,7 @@ function renderCreateContactForm() {
 async function renderEditContactForm(id) {
     showWaitingGif();
     let contact = await API_GetContact(id);
-    if (contact)
+    if (contact !== null)
         renderContactForm(contact);
     else
         renderError("Contact introuvable!");
@@ -107,20 +107,17 @@ async function renderDeleteContactForm(id) {
     $("#actionTitle").text("Retrait");
     let contact = await API_GetContact(id);
     eraseContent();
-    if (contact) {
+    if (contact !== null) {
         $("#content").append(`
         <div class="contactdeleteForm">
             <h4>Effacer le contact suivant?</h4>
             <br>
             <div class="contactRow" contact_id=${contact.Id}">
                 <div class="contactContainer">
-                     <div class="contactLayout">
-                        <div class="avatar" style="background-image:url('${contact.Avatar}')"></div>
-                        <div class="contactInfo">
-                            <span class="contactName">${contact.Name}</span>
-                            <span class="contactPhone">${contact.Phone}</span>
-                            <a href="mailto:${contact.Email}" class="contactEmail" target="_blank" >${contact.Email}</a>
-                        </div>
+                    <div class="contactLayout">
+                        <div class="contactName">${contact.Name}</div>
+                        <div class="contactPhone">${contact.Phone}</div>
+                        <div class="contactEmail">${contact.Email}</div>
                     </div>
                 </div>  
             </div>   
@@ -217,7 +214,6 @@ function renderContactForm(contact = null) {
     $('#contactForm').on("submit", async function (event) {
         event.preventDefault();
         let contact = getFormData($("#contactForm"));
-        contact.Id = parseInt(contact.Id);
         showWaitingGif();
         let result = await API_SaveContact(contact, create);
         if (result)

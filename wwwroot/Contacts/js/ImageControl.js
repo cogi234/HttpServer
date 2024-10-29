@@ -143,7 +143,7 @@ function initImageUploaders() {
             if (waitingImage !== "") UploadedImage.src = waitingImage;
             /* take some delai before starting uploading process in order to let browser to update UploadedImage new source affectation */
             let t2 = setTimeout(function () {
-                if (UploadedImage) {
+                if (UploadedImage !== null) {
                     let len = image.name.length;
 
                     if (len !== 0) {
@@ -215,7 +215,7 @@ function preLoadImage(event) {
         if (waitingImage !== "") UploadedImage.src = waitingImage;
         /* take some delai before starting uploading process in order to let browser to update UploadedImage new source affectation */
         let t2 = setTimeout(function () {
-            if (UploadedImage) {
+            if (UploadedImage !== null) {
                 let len = ImageUploader.value.length;
 
                 if (len !== 0) {
@@ -264,7 +264,7 @@ document.onpaste = function (event) {
             }
         }
         // load image if there is a pasted image
-        if (blob) {
+        if (blob !== null) {
             var reader = new FileReader();
             reader.onload = function (event) {
                 // console.log(event.target.result); // data url!

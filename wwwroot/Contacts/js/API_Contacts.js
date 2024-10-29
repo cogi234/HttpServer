@@ -1,4 +1,4 @@
-//const API_URL = "https://api-server-5.glitch.me/api/contacts";
+
 const API_URL = "http://localhost:5001/api/contacts";
 let currentHttpError = "";
 
