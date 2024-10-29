@@ -2,10 +2,14 @@ import * as AssetsManager from '../assetManager.js';
 import * as utilities from '../utilities.js';
 
 export default class Model {
-    constructor() {
+    constructor(securedId = false) {
         this.fields = [];
-        this.addField('Id', 'integer');
+        if (securedId)
+            this.addField('Id', 'string');
+        else
+            this.addField('Id', 'integer');
         this.key = null;
+        this.securedId = securedId;
         this.state = {
             isValid: true,
             inConflict: false,
@@ -15,15 +19,15 @@ export default class Model {
     }
 
     addField(propertyName, propertyType) {
-        this.fields.push({ name: propertyName, type: propertyType });
+        if (!this.isMember(propertyName))
+            this.fields.push({ name: propertyName, type: propertyType });
     }
     isMember(propertyName) {
-        let exist = false;
-        this.fields.forEach(field => {
+        for (const field of this.fields) {
             if (field.name == propertyName)
-                exist = true;
-        });
-        return exist;
+                return true;
+        }
+        return false;
     }
     setKey(key) {
         this.key = key;

@@ -103,7 +103,7 @@ export function decomposePath(url) {
     let model = undefined;
     let controllerName = undefined;
     let action = undefined;
-    let id = undefined;
+    let id = '';
     let params = null;
 
     let queryString = getQueryString(url);
@@ -125,7 +125,7 @@ export function decomposePath(url) {
 
     if (isAPI) {
         if (urlParts[2] != undefined) {
-            id = parseInt(urlParts[2]);
+            id = urlParts[2];
         }
     } else {
         //Its not an API, so it's a controller
@@ -135,7 +135,7 @@ export function decomposePath(url) {
             action = 'index';
 
         if (urlParts[3] != undefined)
-            id = parseInt(urlParts[3]);
+            id = urlParts[3];
     }
 
     return { isAPI, model, controllerName, action, id, queryString, params };

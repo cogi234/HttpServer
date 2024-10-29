@@ -15,7 +15,7 @@ export default class Controller {
         if (this.repository == null)
             return this.HttpContext.response.notImplemented();
 
-        if (id === undefined) {
+        if (id === '') {
             let data = this.repository.getAll(this.HttpContext.path.params);
 
             if (this.repository.isValid())
@@ -23,8 +23,6 @@ export default class Controller {
             else
                 return this.HttpContext.response.badRequest(this.repository.errorMessages);
         }
-        if (isNaN(id))
-            return this.HttpContext.response.badRequest('The id in the request url is malformed or syntactically wrong.');
 
         let data = this.repository.get(id);
         if (data)
@@ -48,7 +46,7 @@ export default class Controller {
     }
 
     put(data) {
-        if (isNaN(this.HttpContext.path.id)) {
+        if (this.HttpContext.path.id == '') {
             return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
         }
 
@@ -69,7 +67,7 @@ export default class Controller {
     }
 
     remove(id) {
-        if (isNaN(id))
+        if (id === '')
             return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
 
         //We try to remove

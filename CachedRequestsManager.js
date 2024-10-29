@@ -2,7 +2,7 @@ import * as utilities from './utilities.js';
 import * as serverVariables from './serverVariables.js';
 import Repository from './models/repository.js';
 
-let requestCacheExpirationTime = serverVariables.get('main.request.CacheExpirationTime');
+global.requestCacheExpirationTime = serverVariables.get('main.request.CacheExpirationTime');
 
 global.requestCaches = [];
 global.cachedRequestCleanerStarted = false;
@@ -22,12 +22,12 @@ export default class CachedRequestManager {
     static clear(url, log = true) {
         if (url == "")
             return;
-        
+
         if (log)
             console.log(BgWhite + FgBlue, `[Cached ${url} data deleted]`);
-        
-        //We delete the cache for the url and any derived url (urls that start with the provided url)
-        requestCaches = requestCaches.filter(cache => cache.url != url && !cache.url.startsWith(url));
+
+        //We delete the cache for the url
+        requestCaches = requestCaches.filter(cache => cache.url.toLowerCase().indexOf(url.toLowerCase()) == -1);
     }
 
     /**
@@ -49,7 +49,7 @@ export default class CachedRequestManager {
             ETag,
             Expire_Time: utilities.nowInSeconds() + requestCacheExpirationTime
         });
-        console.log(BgWhite + FgBlue, `[Data for {${url}} has been cached]`);
+        console.log(BgWhite + FgBlue, `[Data for {GET: ${url}} has been cached]`);
     }
 
     /**
@@ -64,12 +64,7 @@ export default class CachedRequestManager {
                 if (cache.url == url) {
                     // renew cache
                     cache.Expire_Time = utilities.nowInSeconds() + requestCacheExpirationTime;
-                    let content = cache.content;
-                    let ETag = cache.ETag;
-                    return {
-                        content,
-                        ETag
-                    };
+                    return cache;
                 }
             }
         } catch (error) {
@@ -99,13 +94,18 @@ export default class CachedRequestManager {
     static get(httpContext) {
         if (httpContext.isCacheable) {
             let data = CachedRequestManager.find(httpContext.req.url);
-            if (data != null && data.ETag == Repository.getETag(httpContext.path.model)) {
-                console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
-                return httpContext.response.JSON(data.content, data.ETag, true);
+            if (data != null) {
+                if (data.ETag == Repository.getETag(httpContext.path.model)) {
+                    console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
+                    return httpContext.response.JSON(data.content, data.ETag, true);
+                } else {
+                    //If we found cache, but it's the wrong ETag, we clear it
+                    CachedRequestsManager.clear(HttpContext.path.model);
+                    return false;
+                }
             }
             return false
         }
-
         return false;
     }
 }

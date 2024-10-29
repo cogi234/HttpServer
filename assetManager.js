@@ -10,7 +10,7 @@ let assetsDirectory = "storage";
  */
 export function save(base64Data) {
     if (base64Data.indexOf(';base64,') == -1)
-        base64Data;
+        return base64Data;
 
     let parts = base64Data.split(';base64,');
     let ext = parts[0].split('/')[1];

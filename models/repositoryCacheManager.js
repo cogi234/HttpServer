@@ -40,19 +40,7 @@ export default class RepositoryCacheManager {
      * Clears the cache for this model
      */
     static clear(model) {
-        if (model == "")
-            return;
-
-        let indexesToDelete = [];
-        let index = 0;
-
-        for (let cache of repositoryCaches) {
-            if (cache.model == model)
-                indexesToDelete.push(index);
-            index++;
-        }
-
-        utilities.deleteByIndex(repositoryCaches, indexesToDelete);
+        repositoryCaches = repositoryCaches.filter(cache => cache.model != model);
     }
 
     /**

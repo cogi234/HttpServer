@@ -44,6 +44,9 @@ export default class Repository {
         repositoryETags[this.objectsName] = this.ETag;
     }
 
+    /**
+     * Gets the current ETag for the model
+     */
     static getETag(modelName) {
         if (modelName in repositoryETags)
             return repositoryETags[modelName];

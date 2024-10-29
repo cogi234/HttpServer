@@ -61,11 +61,17 @@ export async function registeredEndpoint(httpContext) {
         if (route) {
             try {
                 //Try to dynamically import the controller
-                const { default: Controller } = (await import('./controllers/' + route.controllerName + 'Controller.js'));
+                const { default: Controller } = await import('./controllers/' + route.controllerName + 'Controller.js');
 
                 let controller = new Controller(httpContext);
 
-                resolve(controller[route.actionName](httpContext));
+                if (route.method === 'POST' || route.method === 'PUT') {
+                    if (httpContext.payload)
+                        resolve(controller[route.actionName](httpContext));
+                    else
+                        resolve(httpContext.response.unsupported());
+                } else
+                    resolve(controller[route.actionName](httpContext));
             } catch (error) {
                 console.log('registered endpoint Error message: \n', error.message);
                 console.log('Stack: \n', error.stack);

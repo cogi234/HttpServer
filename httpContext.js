@@ -18,7 +18,11 @@ export default class HttpContext {
             : (req.socket.remoteAddress == "::1"
                 ? "localhost"
                 : req.socket.remoteAddress);
-        this.isCacheable = this.path.isAPI && this.req.method == "GET" && this.path.id == undefined;
+        this.isCacheable = 
+            this.path.isAPI 
+            && this.req.method == "GET" 
+            && this.path.id == ''
+            && !this.path.queryString.includes('limit');
     }
 
     static get() {
@@ -36,14 +40,14 @@ export default class HttpContext {
                         try {
                             this.payload = JSON.parse(body);
                         } catch (error) {
-                            console.log(error);
+                            console.log(BgRed+FgWhite, `[${error}]`);
                             this.payload = null;
                         }
                     } else if (this.req.headers['content-type'] == 'application/x-www-form-urlencoded') {
                         try {
                             this.payload = queryString.parse(body.toString());
                         } catch (error) {
-                            console.log(error);
+                            console.log(BgRed+FgWhite, error);
                         }
                     }
                 } else {
@@ -51,7 +55,7 @@ export default class HttpContext {
                         this.payload = queryString.parse(utilities.getQueryString(this.req.url));
                     }
                     catch (error) {
-                        console.log(error);
+                        console.log(BgRed+FgWhite, `[${error}]`);
                     }
                 }
                 //if the payload is an empty array, we make it null

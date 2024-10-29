@@ -12,7 +12,9 @@ import { handleCORSPreflight } from './cors.js';
 import { handleStaticResourceRequest } from './staticResourcesServer.js'
 import CachedRequestManager from './CachedRequestsManager.js';
 
+//Server variables
 let api_server_version = serverVariables.get('main.api_server_version');
+let showRequestInfo = serverVariables.get('main.showRequestInfo');
 
 export default class APIServer {
     constructor(port = process.env.PORT || 5001) {
@@ -29,24 +31,25 @@ export default class APIServer {
         this.middlewarePipeline.add(handleCORSPreflight);
         this.middlewarePipeline.add(handleStaticResourceRequest);
 
-        // Custom routes
-        this.middlewarePipeline.add(router.registeredEndpoint);
-
         // API middleware
         this.middlewarePipeline.add(CachedRequestManager.get);
+        this.middlewarePipeline.add(router.registeredEndpoint);
         this.middlewarePipeline.add(router.apiEndpoint);
     }
 
     async handleHttpRequest(req, res) {
         this.markRequestProcessStartTime();
         this.httpContext = await HttpContext.create(req, res);
-        this.showRequestInfo();
+        if (showRequestInfo)
+            this.showRequestInfo();
 
         if (! (await this.middlewarePipeline.handleHttpRequest(this.httpContext)))
             this.httpContext.response.notFound('This endpoint does not exist...');
 
-        this.showRequestProcessTime();
-        this.showMemoryUsage();
+        if (showRequestInfo) {
+            this.showRequestProcessTime();
+            this.showMemoryUsage();
+        }
     }
 
     start() {
@@ -73,6 +76,12 @@ export default class APIServer {
 
         if (this.httpContext.payload)
             console.log(FgGreen + Bright, "Request payload -->", JSON.stringify(this.httpContext.payload).substring(0, 127) + "...");
+    }
+    
+    showShortRequestInfo() {
+        console.log(FgGreen + Bright, `Request --> [${this.httpContext.req.method}::${this.httpContext.req.url}]`);
+        if (this.httpContext.payload)
+            console.log(FgGreen + Bright, "Payload -->", JSON.stringify(this.httpContext.payload).substring(0, 127) + "...");
     }
 
     markRequestProcessStartTime() {

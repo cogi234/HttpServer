@@ -1,5 +1,8 @@
 import { log } from './log.js';
 import CachedRequestManager from './CachedRequestsManager.js';
+import * as serverVariables from './serverVariables.js';
+
+let showRequestInfo = serverVariables.get('main.showRequestInfo');
 
 export default class Response {
     constructor(HttpContext) {
@@ -31,7 +34,9 @@ export default class Response {
         else
             this.res.end();
 
-        console.log(FgCyan + Bright, "Response status:", this.res.statusCode, this.errorContent);
+        if (showRequestInfo)
+            console.log(FgCyan + Bright, "Response status:", this.res.statusCode, this.errorContent);
+
         return true;
     }
 
@@ -41,23 +46,24 @@ export default class Response {
         return this.status(200);
     }
     ETag(ETag) {
-        console.log(FgCyan + Bright, "Response header ETag key:", ETag);
+        if (showRequestInfo)
+            console.log(FgCyan + Bright, "Response header ETag key:", ETag);
         this.res.writeHead(204, { 'ETag': ETag });
         return this.end();
     }
     JSON(object, ETag = "", fromCache = false) {                     // ok status with content
-        //If it's not coming from the cache and it's cacheable, we save it to the cache
-        if (!fromCache && this.HttpContext.isCacheable) {
-            CachedRequestManager.add(this.HttpContext.req.url, object, ETag);
-        }
-
-        if (ETag != "")
+        if (ETag !== "")
             this.res.writeHead(200, { 'content-type': 'application/json', "ETag" : ETag });
         else
             this.res.writeHead(200, { 'content-type': 'application/json' });
         
         if (object) {
+            //If it's not coming from the cache and it's cacheable, we save it to the cache
+            if (!fromCache && this.HttpContext.isCacheable) {
+                CachedRequestManager.add(this.HttpContext.req.url, object, ETag);
+            }
             let content = JSON.stringify(object);
+            if (showRequestInfo);
             console.log(FgCyan + Bright, "Response payload -->", content.toString().substring(0, 75) + "...");
             return this.end(content);
         }
