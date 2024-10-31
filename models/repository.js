@@ -180,7 +180,7 @@ export default class Repository {
     remove(id) {
         let index = 0;
         for (let object of this.objects()) {
-            if (object.Id === id) {
+            if (object.Id == id) {
                 this.model.removeAssets(object);
                 this.objectsList.splice(index, 1);
                 this.write();
@@ -222,7 +222,7 @@ export default class Repository {
      */
     get(id, bind = true) {
         for (let object of this.objects()) {
-            if (object.Id === id)
+            if (object.Id == id)
                 if (bind)
                     return this.model.bindExtraData(object);
                 else
@@ -289,7 +289,7 @@ export default class Repository {
     indexOf(id) {
         let index = 0;
         for (let object of this.objects()) {
-            if (object.Id === id) return index;
+            if (object.Id == id) return index;
             index++;
         }
         return -1;

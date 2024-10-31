@@ -63,7 +63,7 @@ export default class Controller {
         if (this.repository.model.state.inConflict)
             return this.HttpContext.response.conflict(this.repository.model.state.errors);
 
-        this.HttpContext.response.badRequest(this.repository.model.state.errors);
+        return this.HttpContext.response.badRequest(this.repository.model.state.errors);
     }
 
     remove(id) {
