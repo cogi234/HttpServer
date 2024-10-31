@@ -7,13 +7,16 @@ global.requestCacheExpirationTime = serverVariables.get('main.request.CacheExpir
 global.requestCaches = [];
 global.cachedRequestCleanerStarted = false;
 
+let showCacheInfo = serverVariables.get('main.request.showCacheInfo');
+
 export default class CachedRequestManager {
     /**
      * Start cleaning the cache
      */
     static startCachedRequestCleaner() {
         setInterval(CachedRequestManager.flushExpired, requestCacheExpirationTime * 1000);
-        console.log(BgWhite + FgBlue, "[Periodic request caches cleaning process started...]");
+        if (showCacheInfo)
+            console.log(BgWhite + FgBlue, "[Periodic request caches cleaning process started...]");
     }
 
     /**
@@ -23,7 +26,7 @@ export default class CachedRequestManager {
         if (url == "")
             return;
 
-        if (log)
+        if (showCacheInfo)
             console.log(BgWhite + FgBlue, `[Cached ${url} data deleted]`);
 
         //We delete the cache for the url
@@ -49,7 +52,8 @@ export default class CachedRequestManager {
             ETag,
             Expire_Time: utilities.nowInSeconds() + requestCacheExpirationTime
         });
-        console.log(BgWhite + FgBlue, `[Data for {GET: ${url}} has been cached]`);
+        if (showCacheInfo)
+            console.log(BgWhite + FgBlue, `[Data for {GET: ${url}} has been cached]`);
     }
 
     /**
@@ -81,7 +85,8 @@ export default class CachedRequestManager {
 
         for (let cache of requestCaches) {
             if (cache.Expire_Time <= now) {
-                console.log(BgWhite + FgBlue, `[Cached ${cache.url} data expired]`);
+                if (showCacheInfo)
+                    console.log(BgWhite + FgBlue, `[Cached ${cache.url} data expired]`);
             }
         }
 
@@ -96,7 +101,8 @@ export default class CachedRequestManager {
             let data = CachedRequestManager.find(httpContext.req.url);
             if (data != null) {
                 if (data.ETag == Repository.getETag(httpContext.path.model)) {
-                    console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
+                    if (showCacheInfo)
+                        console.log(BgWhite + FgBlue, `[{${httpContext.req.url}} data retrieved from cache]`);
                     return httpContext.response.JSON(data.content, data.ETag, true);
                 } else {
                     //If we found cache, but it's the wrong ETag, we clear it

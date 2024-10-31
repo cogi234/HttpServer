@@ -44,7 +44,7 @@ export function getQueryString(url) {
     let queryStringMarkerPosition = url.indexOf('?');
     if (queryStringMarkerPosition >= 0)
         return url.substr(queryStringMarkerPosition, url.length);
-    return undefined;
+    return '';
 }
 
 /**
@@ -107,7 +107,7 @@ export function decomposePath(url) {
     let params = null;
 
     let queryString = getQueryString(url);
-    if (queryString != undefined)
+    if (queryString !== '')
         params = queryStringParser.parse(queryString);
     let path = removeQueryString(url).toLowerCase();
 

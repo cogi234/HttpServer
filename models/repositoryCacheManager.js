@@ -6,13 +6,16 @@ let repositoryCacheExpirationTime = serverVariables.get('main.repository.CacheEx
 global.repositoryCaches = [];
 global.cachedRepositoriesCleanerStarted = false;
 
+let showCacheInfo = serverVariables.get('main.repository.showCacheInfo');
+
 export default class RepositoryCacheManager {
     /**
      * Start cleaning the cache
      */
     static startCachedRepositoriesCleaner() {
         setInterval(RepositoryCacheManager.flushExpired, repositoryCacheExpirationTime * 1000);
-        console.log(BgWhite + FgBlue, "[Periodic repositories data caches cleaning process started...]");
+        if (showCacheInfo)
+            console.log(BgWhite + FgBlue, "[Periodic repositories data caches cleaning process started...]");
     }
 
     /**
@@ -33,7 +36,9 @@ export default class RepositoryCacheManager {
             data,
             Expire_Time: utilities.nowInSeconds() + repositoryCacheExpirationTime
         });
-        console.log(BgWhite + FgBlue, `[Data of ${model} repository has been cached]`);
+        
+        if (showCacheInfo)
+            console.log(BgWhite + FgBlue, `[Data of ${model} repository has been cached]`);
     }
 
     /**
@@ -55,7 +60,8 @@ export default class RepositoryCacheManager {
                 if (cache.model == model) {
                     // renew cache
                     cache.Expire_Time = utilities.nowInSeconds() + repositoryCacheExpirationTime;
-                    console.log(BgWhite + FgBlue, `[${cache.model} data retrieved from cache]`);
+                    if (showCacheInfo)
+                        console.log(BgWhite + FgBlue, `[${cache.model} data retrieved from cache]`);
                     return cache.data;
                 }
             }
@@ -73,7 +79,8 @@ export default class RepositoryCacheManager {
 
         for (let cache of repositoryCaches) {
             if (cache.Expire_Time <= now) {
-                console.log(BgWhite + FgBlue, `[Cached ${cache.model} data expired]`);
+                if (showCacheInfo)
+                    console.log(BgWhite + FgBlue, `[Cached ${cache.model} data expired]`);
             }
         }
 
