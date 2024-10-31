@@ -34,16 +34,15 @@
 
             <span>POST</span>
             <span>api/contacts</span>
-            <span>{ "Name": string, "Phone": string, "Email": string } Name doit être unique</span>
+            <span>{ "Name": string, "Phone": string, "Email": string, "Avatar": asset } Name doit être unique</span>
 
             <span>PUT</span>
             <span>api/contacts/id</span>
-            <span>{ "Name": string, "Phone": string, "Email": string } Name doit être unique</span>
+            <span>{ "Name": string, "Phone": string, "Email": string, "Avatar": asset } Name doit être unique</span>
 
             <span>DELETE</span>
             <span>api/contacts/id</span>
             <span></span>
-
         </div>
         <br>
 
@@ -69,13 +68,34 @@
             <span>DELETE</span>
             <span>api/bookmarks/id</span>
             <span></span>
+        </div>
+        <br>
+        
+        <h2><a href="Posts/" target="_blank">Posts</a></h2>
+        <h2><a href="api/posts" target="_blank">Posts API</a></h2>
+        <div class="endpoints">
+            <span>GET</span>
+            <span>api/posts</span>
+            <span></span>
 
+            <span>GET</span>
+            <span>api/posts/id</span>
+            <span></span>
+
+            <span>POST</span>
+            <span>api/posts</span>
+            <span>{ "Title": string, "Text": string, "Category": string, "Creation": int, "Image": asset } Creation est le temps UNIX</span>
+
+            <span>PUT</span>
+            <span>api/posts/id</span>
+            <span>{ "Title": string, "Text": string, "Category": string, "Creation": int, "Image": asset } Creation est le temps UNIX</span>
+
+            <span>DELETE</span>
+            <span>api/posts/id</span>
+            <span></span>
         </div>
 
     </div>
-    <script>
-        console.log("index");
-    </script>
 </body>
 
 </html>
