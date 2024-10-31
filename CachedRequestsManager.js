@@ -106,7 +106,7 @@ export default class CachedRequestManager {
                     return httpContext.response.JSON(data.content, data.ETag, true);
                 } else {
                     //If we found cache, but it's the wrong ETag, we clear it
-                    CachedRequestsManager.clear(HttpContext.path.model);
+                    CachedRequestManager.clear(httpContext.path.model);
                     return false;
                 }
             }
