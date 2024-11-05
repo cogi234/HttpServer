@@ -105,13 +105,21 @@ export default class Repository {
      * @returns the next id to insert
      */
     nextId() {
-        let maxId = 0;
-        for (let object of this.objects()) {
-            if (object.Id > maxId) {
-                maxId = object.Id;
+        if (this.model.securedId) {
+            let newId = '';
+            do {
+                newId = uuid()
+            } while (this.indexOf(newId) > -1);
+            return newId;
+        } else {
+            let maxId = 0;
+            for (let object of this.objects()) {
+                if (object.Id > maxId) {
+                    maxId = object.Id;
+                }
             }
+            return maxId + 1;
         }
-        return maxId + 1;
     }
 
     /**
@@ -133,7 +141,10 @@ export default class Repository {
      */
     add(object) {
         delete object.Id;
-        object = { Id: 0, ...object };
+        if (this.model.securedId)
+            object = { Id: '', ...object };
+        else
+            object = { Id: 0, ...object };
         this.model.validate(object);
 
         if (this.model.state.isValid) {
@@ -153,6 +164,8 @@ export default class Repository {
      */
     update(id, objectToModify) {
         delete objectToModify.Id;
+        if (!this.model.securedId)
+            id = parseInt(id);
         objectToModify = { Id: id, ...objectToModify };
         this.model.validate(objectToModify);
 
@@ -179,8 +192,10 @@ export default class Repository {
      */
     remove(id) {
         let index = 0;
+        if (!this.model.securedId)
+            id = parseInt(id);
         for (let object of this.objects()) {
-            if (object.Id == id || id == object.Id) {
+            if (object.Id === id) {
                 this.model.removeAssets(object);
                 this.objectsList.splice(index, 1);
                 this.write();
@@ -221,6 +236,8 @@ export default class Repository {
      * @param {boolean} [bind=true] Do we bind extra data?
      */
     get(id, bind = true) {
+        if (!this.model.securedId)
+            id = parseInt(id);
         for (let object of this.objects()) {
             if (object.Id == id || id == object.Id)
                 if (bind)
@@ -269,6 +286,9 @@ export default class Repository {
      * Find the object where fieldName == value, excluding the object with Id == excludedId
      */
     findByField(fieldName, value, exludedId = 0) {
+        
+        if (!this.model.securedId && exludedId != 0)
+            exludedId = parseInt(exludedId);
         if (fieldName) {
             let index = 0;
             for (let object of this.objects()) {

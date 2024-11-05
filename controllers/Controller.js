@@ -50,10 +50,10 @@ export default class Controller {
             return this.HttpContext.response.badRequest('The id of the resource is not specified or malformed in the request url.');
         }
 
-        this.repository.update(this.HttpContext.path.id, data);
+        data = this.repository.update(this.HttpContext.path.id, data);
 
         if (this.repository.model.state.isValid) {
-            return this.HttpContext.response.ok();
+            return this.HttpContext.response.accepted(data);
         }
 
         //Invalid model

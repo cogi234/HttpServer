@@ -1,5 +1,5 @@
-import { log } from './log.js';
 import CachedRequestManager from './CachedRequestsManager.js';
+import { log } from './log.js';
 import * as serverVariables from './serverVariables.js';
 
 let showRequestInfo = serverVariables.get('main.showRequestInfo');
@@ -73,8 +73,9 @@ export default class Response {
         this.res.writeHead(200, { 'content-type': 'text/html' });
         return this.end(content);
     }
-    accepted() {
-        return this.status(202);
+    accepted(object = null) {
+        this.res.writeHead(202, { 'content-type': 'application/json' });
+        return (object != null ? this.end(JSON.stringify(object)) : this.end());
     }
     deleted() {
         return this.status(202);

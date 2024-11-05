@@ -1,6 +1,6 @@
-import * as utilities from './utilities.js';
-import * as serverVariables from './serverVariables.js';
 import Repository from './models/repository.js';
+import * as serverVariables from './serverVariables.js';
+import * as utilities from './utilities.js';
 
 global.requestCacheExpirationTime = serverVariables.get('main.request.CacheExpirationTime');
 
@@ -22,7 +22,7 @@ export default class CachedRequestManager {
     /**
      * Clears the cache for an url
      */
-    static clear(url, log = true) {
+    static clear(url) {
         if (url == "")
             return;
 

@@ -9,6 +9,7 @@ export default class CollectionFilter {
         this.collection = collection;
         this.sortFields = [];
         this.searchKeys = [];
+        this.keywords = [];
         this.fields = [];
         this.ranges = [];
         this.filteredCollection = [];
@@ -57,6 +58,9 @@ export default class CollectionFilter {
                                 break;
                             case 'fields':
                                 instance.fields = paramValue.split(',');
+                                break;
+                            case 'keywords':
+                                instance.keywords = paramValue.split(',');
                                 break;
                             default:
                                 let normalizedParamName = instance.normalizeName(paramName);
@@ -254,6 +258,32 @@ export default class CollectionFilter {
             filteredCollection = [...collection];
         return filteredCollection;
     }
+    findByKeywords(collection) {
+        if (this.keywords.length == 0 || this.model == null)
+            return collection;
+
+        let filteredCollection = [];
+
+        for (const item of collection) {
+            let record = '';
+            for (const field of this.model.fields) {
+                if (field.type == 'string')
+                    record += item[field.name].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + " ";
+            }
+
+            let keep = true;
+            for (const keyword of this.keywords) {
+                if (record.indexOf(keyword.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')) == -1) {
+                    keep = false;
+                    break;
+                }
+            }
+            if (keep)
+                filteredCollection.push(item);
+        }
+
+        return filteredCollection;
+    }
     compareNum(x, y) {
         if (x === y) return 0;
         else if (x < y) return -1;
@@ -322,6 +352,7 @@ export default class CollectionFilter {
     get() {
         if (this.isValid()) {
             this.filteredCollection = this.findByKeys(this.collection);
+            this.filteredCollection = this.findByKeywords(this.filteredCollection);
             if (this.fields.length > 0) {
                 this.filteredCollection = this.keepFields(this.filteredCollection);
                 this.prevSortFields = [...this.sortFields];
