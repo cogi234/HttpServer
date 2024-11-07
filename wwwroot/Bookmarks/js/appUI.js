@@ -244,7 +244,7 @@ function getFormData($form) {
     });
     return jsonObject;
 }
-function newBookmark() {
+function newPost() {
     Bookmark = {};
     Bookmark.Id = 0;
     Bookmark.Title = "";
@@ -257,7 +257,7 @@ function renderBookmarkForm(Bookmark = null) {
     let create = Bookmark == null;
     let favicon = `<div class="big-favicon"></div>`;
     if (create)
-        Bookmark = newBookmark();
+        Bookmark = newPost();
     else
         favicon = makeFavicon(Bookmark.Url, true);
     $("#actionTitle").text(create ? "Création" : "Modification");
