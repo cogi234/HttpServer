@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionnaire de favoris</title>
+    <title>Fil de nouvelles</title>
 
     <link rel="site.webmanifest" href="manifest.json" />
     <link rel="icon" href="bookmark_logo.png">
@@ -18,8 +18,8 @@
 <body>
     <div id="main">
         <div id="header">
-            <img src="bookmark_logo.png" class="appLogo" alt="" title="Gestionnaire de posts">
-            <h4 id="actionTitle">Liste des favoris</h4>
+            <img src="bookmark_logo.png" class="appLogo" alt="" title="Fil de nouvelles">
+            <h4 id="actionTitle">Fil de nouvelles</h4>
             <i class="cmdIcon fa fa-plus" id="createPost" title="Ajouter un post"></i>
             <i class="cmdIcon fa fa-times" id="abort" title="Annuler"></i>
             <div class="dropdown ms-auto" >
@@ -36,40 +36,55 @@
         <div id="content">
             <div id="scrollPanel">
                 <div id="itemsPanel">
-                    <div class="BookmarkRow" id="sample">
-                        <div class="BookmarkContainer noselect">
-                            <div class="BookmarkLayout">
-                                <div class="Bookmark">
-                                    <a href="" target="_blank">sample </a>
-                                    <span class="BookmarkTitle">sample</span>
-                                </div>
-                                <span class="BookmarkCategory">sample Category</span>
+                    <div class="Post" id="sample">
+                        <div class="PostHeader">
+                            <div class="PostCategory">
+                                Sample Category
                             </div>
-                            <div class="BookmarkCommandPanel">
+                            <div></div>
+                            <div class="PostCommandPanel">
                                 <span class="editCmd cmdIcon fa fa-pencil" editBookmarkId="${Bookmark.Id}"
-                                    title="Modifier ${Bookmark.Title}"></span>
+                                    title="Modifier ${Post.Title}"></span>
                                 <span class="deleteCmd cmdIcon fa fa-trash" deleteBookmarkId="${Bookmark.Id}"
-                                    title="Effacer ${Bookmark.Title}"></span>
+                                    title="Effacer ${Post.Title}"></span>
+                            </div>
+                        </div>
+                        <div class="PostContent">
+                            <h2 class="PostTitle">Sample title</h2>
+                            <img class="PostImage" src="https://cdn.pixabay.com/photo/2017/05/29/15/34/kitten-2354016_1280.jpg">
+                            <div class="PostTime">Mardi, 11 octobre 2022 - 17:44:18</div>
+                            <div class="PostText">
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.<br><br>
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
+                                This is some sample post text. This is some sample post text. This is some sample post text. This is some sample post text.
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="forms">
-                <div id="bookmarkForm"></div>
+                <div id="postForm"></div>
                 <div id="errorContainer" class="errorContainer"></div>
                 <div id="aboutContainer" class="aboutContainer">
-                    <h2>Gestionnaire de favoris</h2>
+                    <h2>Fil de nouvelles</h2>
                     <hr>
                     <p>
-                        Petite application de gestion de favoris à titre de démonstration
+                        Petite application de gestion de posts à titre de démonstration
                         d'interface utilisateur monopage réactive.
                     </p>
                     <p>
-                        Auteur: Nicolas Chourot
+                        Auteur: Nicolas Chourot <br>
+                        Modifié pas: Colin Bougie
                     </p>
                     <p>
-                        Collège Lionel-Groulx, automne 2023
+                        Collège Lionel-Groulx, automne 2024
                     </p>
                 </div>
             </div>
@@ -79,7 +94,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script src="js/Bookmarks_API.js"></script>
+    <script src="js/Posts_API.js"></script>
     <script src="js/pageManager.js"></script>
     <script src="js/validation.js"></script>
     <script src="js/appUI.js"></script>

@@ -1,55 +1,48 @@
+.Post {
+    margin: 0.5rem;
+    padding: 1rem;
 
-.BookmarkRow {
-    padding: 8px;
-    padding-bottom: 0px;
-   /* scroll-snap-align: start;*/
-}
-
-.BookmarkContainer {
-    display: grid;
-    grid-template-columns: 4fr 1fr;
-    align-items: top;
     background-color: #eee;
-    border-radius: 6px;
+    border-radius: 1rem;
 }
 
-.BookmarkContainer .cmdIcon {
-    display: none;
-}
-
-.BookmarkContainer:hover .cmdIcon {
-    display: block;
-}
-
-.BookmarkLayout {
+.PostHeader {
     display: grid;
-    grid-template-columns: 1fr;
-    padding: 10px;
-    gap: 8px;
-    align-items: center;
+    grid-template-columns: max-content auto max-content;
 }
+.PostCategory {
+    height: fit-content;
+    margin: auto 0.5rem;
 
-.Bookmark {
-    display: grid;
-    grid-template-columns: 30px auto;
-}
-
-.BookmarkTitle {
-    font-size: 1.1rem;
+    color: blue;
     font-weight: bold;
-    color: black;
+    text-transform: uppercase;
+}
+.PostCommandPanel {
+    margin: auto 0.5rem;
 }
 
-.BookmarkCategory {
-    color: dodgerblue !important;
+.PostContent {
+
+}
+.PostTitle {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.PostImage {
+    width: 100%;
+    border-radius: 1rem;
+}
+.PostTime {
+    margin-bottom: 1rem;
+
+    color: rgb(112, 112, 112);
+    font-size: small;
+}
+.PostText {
+
 }
 
-.BookmarkCommandPanel {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 8px;
-}
 
 .BookmarkdeleteForm {
     margin: 20px;
