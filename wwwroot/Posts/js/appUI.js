@@ -1,6 +1,7 @@
 const periodicRefreshPeriod = 10;
 let categories = [];
 let selectedCategory = "";
+let searchKeywords = [];
 let currentETag = "";
 let hold_Periodic_Refresh = false;
 let pageManager;
@@ -37,6 +38,13 @@ async function Init_UI() {
     $('#aboutCmd').on("click", function () {
         renderAbout();
     });
+    $('#searchButton').on("click", function () {
+        changeSearch();
+    });
+    $('#searchBar').on("keypress", function (event) {
+        if (event.which == 13)
+            changeSearch();
+    });
     showPosts();
     start_Periodic_Refresh();
 }
@@ -66,7 +74,7 @@ function start_Periodic_Refresh() {
             }
         }
     },
-        periodicRefreshPeriod * 1000);
+    periodicRefreshPeriod * 1000);
 }
 function renderAbout() {
     hidePosts();
@@ -129,10 +137,11 @@ async function compileCategories() {
 }
 async function renderPosts(queryString) {
     let endOfData = false;
-    queryString += "&sort=category";
+    queryString += "&sort=creation,desc";
     if (selectedCategory != "") queryString += "&category=" + selectedCategory;
+    if (searchKeywords.length > 0) queryString += "&keywords=" + searchKeywords.join(",");
     addWaitingGif();
-    let response = await Posts_API.Get(queryString);
+    let response = await Posts_API.GetQuery(queryString);
     if (!Posts_API.error) {
         currentETag = response.ETag;
         let Posts = response.data;
@@ -348,9 +357,7 @@ function renderPostForm(Post = null) {
     });
 }
 function renderPost(Post) {
-    console.log(Post.Text);
     let text = insertLineBreaks(Post.Text);
-    console.log(text);
     let time = convertToFrenchDate(Post.Creation);
     return $(`
     <div class="Post" id="${Post.Id}">
@@ -372,4 +379,16 @@ function renderPost(Post) {
         </div>
     </div>    
     `);
+}
+
+function changeSearch() {
+    let searchText = $('#searchBar').val().trim();
+    console.log(searchText);
+    if (searchText.length > 0) 
+        searchKeywords = searchText.split(' ');
+    else
+        searchKeywords = [];
+    
+    showPosts();
+    pageManager.reset();
 }

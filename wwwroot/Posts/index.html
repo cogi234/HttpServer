@@ -18,17 +18,25 @@
 <body>
     <div id="main">
         <div id="header">
-            <img src="bookmark_logo.png" class="appLogo" alt="" title="Fil de nouvelles">
-            <h4 id="actionTitle">Fil de nouvelles</h4>
-            <i class="cmdIcon fa fa-plus" id="createPost" title="Ajouter un post"></i>
-            <i class="cmdIcon fa fa-times" id="abort" title="Annuler"></i>
-            <div class="dropdown ms-auto" >
-                <div data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="cmdIcon fa fa-ellipsis-vertical"></i>
-                </div>
-                <div class="dropdown-menu noselect" id="DDMenu">
-                    <div class="dropdown-item menuItemLayout" id="aboutCmd">
-                        <i class="menuIcon fa fa-info-circle mx-2"></i> À propos...
+            <div id="header-left">
+                <img src="bookmark_logo.png" class="appLogo" alt="" title="Fil de nouvelles">
+                <h4 id="actionTitle" style="margin-left: 1rem;">Fil de nouvelles</h4>
+            </div>
+            <div id="header-middle">
+                <input type="text" id="searchBar" placeholder="Rechercher...">
+                <i class="cmdIcon fa fa-search" id="searchButton" title="Rechercher"></i>
+            </div>
+            <div id="header-right">
+                <i class="cmdIcon fa fa-plus" id="createPost" title="Ajouter un post"></i>
+                <i class="cmdIcon fa fa-times" id="abort" title="Annuler"></i>
+                <div class="dropdown ms-auto" >
+                    <div data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="cmdIcon fa fa-ellipsis-vertical"></i>
+                    </div>
+                    <div class="dropdown-menu noselect" id="DDMenu">
+                        <div class="dropdown-item menuItemLayout" id="aboutCmd">
+                            <i class="menuIcon fa fa-info-circle mx-2"></i> À propos...
+                        </div>
                     </div>
                 </div>
             </div>
